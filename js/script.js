@@ -81,9 +81,19 @@ function validateForm() {
 }
 
 // Logic to add a tick to the end of the input boxes on the 'contact' form when information is entered.
+// Week5 - Now also validates the format of the email address before showing the tick.
 function addTick(inputElement) {
   const tickElement = inputElement.nextElementSibling;
-  tickElement.style.visibility = inputElement.value.trim().length > 0 ? 'visible' : 'hidden';
+  const value = inputElement.value.trim();
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (inputElement.type == "email") {
+    tickElement.style.visibility = emailPattern.test(value) ? 'visible' : 'hidden';
+  }
+  else {
+    tickElement.style.visibility = value.length > 0 ? 'visible' : 'hidden';
+}
 }
 
 // Logic to call api: api.postcodes.io/postcodes/ and lookup a UK postcode input
