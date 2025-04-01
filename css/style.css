@@ -138,6 +138,10 @@ body {
     visibility: hidden;
   }
 
+.item4 .inLine { 
+    display: inline 
+}
+
 .item5 {
     grid-area: footer;
     background-color: rgb(250, 98, 124);

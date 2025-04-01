@@ -9,10 +9,10 @@ fetch("header.html")
 
 // This is for the footer
 fetch("footer.html")
-.then(response => response.text())
-.then(data => {
-document.getElementById("footer-placeholder").innerHTML = data;
-});
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("footer-placeholder").innerHTML = data;
+  });
 
 // Quiz Functionality Section
 // Array of question-answer objects
@@ -56,9 +56,9 @@ function checkAnswer() {
 // Logic for validation of input elements in the 'contact' form. Can be expanded as required.
 function validateForm() {
   const vFields = [
-    {name: "firstname", message: "First name must be completed", id: "validateFname"},
-    {name: "lastname", message: "Last name must be completed", id: "validateLname"},
-    {name: "email", message: "Email must be completed", id: "validateEmail"}
+    { name: "firstname", message: "First name must be completed", id: "validateFname" },
+    { name: "lastname", message: "Last name must be completed", id: "validateLname" },
+    { name: "email", message: "Email must be completed", id: "validateEmail" }
   ];
 
   let valid = true;
@@ -67,14 +67,14 @@ function validateForm() {
     const inputValue = document.forms["contact"][vField.name].value.trim();
     const validationElement = document.getElementById(vField.id);
 
-    if(!inputValue) {
-      validationElement.innerHTML=vField.message;
-      validationElement.style.color="red";
-      validationElement.style.fontSize="10px";
+    if (!inputValue) {
+      validationElement.innerHTML = vField.message;
+      validationElement.style.color = "red";
+      validationElement.style.fontSize = "10px";
       valid = false;
     }
     else {
-      validationElement.innerHTML="";
+      validationElement.innerHTML = "";
     }
   });
   return valid;
@@ -86,6 +86,42 @@ function addTick(inputElement) {
   tickElement.style.visibility = inputElement.value.trim().length > 0 ? 'visible' : 'hidden';
 }
 
+// Logic to call api: api.postcodes.io/postcodes/ and lookup a UK postcode input
+async function findPostcode() {
+  const postcode = document.getElementById("postcode").value;
+  const url = "https://api.postcodes.io/postcodes/?q=" + postcode;
+  cityElement = document.getElementById("city");
+  countryElement = document.getElementById("country");
+
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+
+    if (json.result && json.result.length > 0) {
+      const result = json.result[0];
+      const city = result.nuts;
+      const country = result.country;
+
+      cityElement.innerHTML = city;
+      cityElement.style.color = "green";
+      cityElement.style.fontWeight = "bold";
+
+      countryElement.value = country;
+      addTick(document.getElementById("country"));
+    }
+    else {
+      cityElement.innerHTML = "No UK results found for this postcode.";
+      cityElement.style.color = "red";
+      cityElement.style.fontWeight = "bold";
+      countryElement.value = "Elsewhere"
+    }
+  }
+  catch (error) {
+    cityElement.innerHTML = "Error fetching postcode data.", error;
+    cityElement.style.color = "red";
+    cityElement.style.fontWeight = "bold";
+  }
+}
 
 // This loads the random question on page initiation
 window.addEventListener("load", displayRandomQuestion);
